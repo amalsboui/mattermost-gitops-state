@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mattermost
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.io
+spec:
+  project: default
+  source:
+    repoURL: https://helm.mattermost.com
+    chart: mattermost-operator
+    targetRevision: 1.0.5
+    helm:
+      valuesObject:
+        mattermostOperator:
+          enabled: true
+          replicas: 1
+          rbac:
+            create: true
+          serviceAccount:
+            create: true
+          env:
+            maxReconcilingInstallations: 20
+            maxReconcilingConcurrency: 10
+            requeuOnLimitDelay: 20s
+          image:
+            repository: mattermost/mattermost-operator
+            tag: v1.25.4
+            pullPolicy: IfNotPresent
+          args:
+            - --enable-leader-election
+            - --metrics-addr=0.0.0.0:8385
+        mattermostCR:
+          enabled: true
+          name: mattermost
+          spec:
+            version: 10.10.1
+            replicas: 1
+            ingress:
+              enabled: false
+            database:
+              external:
+                secret: mattermost-db-secret
+            fileStore:
+              external:
+                url: minio.mattermost.svc.cluster.local:9000
+                bucket: mattermost
+                secret: mattermost-minio-secret
+            mattermostEnv:
+              - name: MM_FILESETTINGS_AMAZONS3SSL
+                value: "false"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mattermost
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
