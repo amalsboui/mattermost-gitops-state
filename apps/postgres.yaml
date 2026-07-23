@@ -16,7 +16,10 @@ spec:
         auth:
           username: mmuser
           database: mattermost
-          existingSecret: mattermost-db-secret
+          existingSecret: postgres-credentials
+          secretKeys:
+            adminPasswordKey: postgres-password
+            userPasswordKey: password
         primary:
           persistence:
             size: 2Gi
