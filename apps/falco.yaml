@@ -15,6 +15,10 @@ spec:
       valuesObject:
         driver:
           kind: modern_ebpf
+        rbac:
+          create: true
+        kubernetes:
+          enabled: true
         tty: true
         falcosidekick:
           enabled: false
