@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falco
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.io
+spec:
+  project: default
+  source:
+    repoURL: https://falcosecurity.github.io/charts
+    chart: falco
+    targetRevision: 4.21.2
+    helm:
+      valuesObject:
+        driver:
+          kind: modern_ebpf
+        tty: true
+        falcosidekick:
+          enabled: false
+        customRules:
+          mattermost_rules.yaml: |-
+            - rule: Shell spawned in mattermost namespace
+              desc: Detects shell execution inside any pod in the mattermost namespace
+              condition: >
+                spawned_process and
+                shell_procs and
+                k8s.ns.name = "mattermost"
+              output: >
+                Shell spawned in mattermost pod
+                (user=%user.name pod=%k8s.pod.name ns=%k8s.ns.name
+                cmd=%proc.cmdline)
+              priority: WARNING
+              tags: [mattermost, shell, security]
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: falco
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
