@@ -14,9 +14,19 @@ spec:
     helm:
       valuesObject:
         server:
-          dev:
+          dataStorage:
             enabled: true
-            devRootToken: root
+            size: 512Mi
+
+          standalone:
+            enabled: true
+
+          dev:
+            enabled: false
+
+          injector:
+            enabled: true
+
   destination:
     server: https://kubernetes.default.svc
     namespace: vault
@@ -26,7 +36,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-  ignoreDifferences:
+    ignoreDifferences:
     - group: admissionregistration.k8s.io
       kind: MutatingWebhookConfiguration
       name: vault-agent-injector-cfg
