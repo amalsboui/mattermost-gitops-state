@@ -15,20 +15,20 @@ spec:
       valuesObject:
         admissionController:
           replicas: 1
+
         crds:
           install: true
-        cleanupController:
+
+        cleanupController: {}
+
         rbac:
           clusterRole:
             enabled: true
-        cleanupJobs:
-          image:
-            registry: docker.io
-            repository: bitnami/kubectl
-            tag: "1.29.3"
+
   destination:
     server: https://kubernetes.default.svc
     namespace: kyverno
+
   syncPolicy:
     automated:
       prune: true
