@@ -16,7 +16,7 @@ spec:
         mode: standalone
         replicas: 1
         auth:
-          existingSecret: mattermost-minio-secret
+          existingSecret: minio
         defaultBuckets: mattermost
         persistence:
           size: 1Gi
