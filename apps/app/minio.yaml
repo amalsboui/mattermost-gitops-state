@@ -35,3 +35,11 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: minio
+      namespace: mattermost
+      jsonPointers:
+        - /data
