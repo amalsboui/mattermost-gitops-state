@@ -5,8 +5,10 @@ metadata:
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.io
+
 spec:
   project: default
+
   source:
     repoURL: https://helm.releases.hashicorp.com
     chart: vault
@@ -14,15 +16,15 @@ spec:
     helm:
       valuesObject:
         server:
-          dataStorage:
-            enabled: true
-            size: 512Mi
+          dev:
+            enabled: false
 
           standalone:
             enabled: true
 
-          dev:
-            enabled: false
+          dataStorage:
+            enabled: true
+            size: 512Mi
 
           injector:
             enabled: true
@@ -30,13 +32,16 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: vault
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+
     syncOptions:
       - CreateNamespace=true
-    ignoreDifferences:
+
+  ignoreDifferences:
     - group: admissionregistration.k8s.io
       kind: MutatingWebhookConfiguration
       name: vault-agent-injector-cfg
