@@ -21,11 +21,11 @@ spec:
         rbac:
           clusterRole:
             enabled: true
-      cleanupJobs:
-        image:
-          registry: docker.io
-          repository: bitnami/kubectl
-          tag: "1.29.3"
+        cleanupJobs:
+          image:
+            registry: docker.io
+            repository: bitnami/kubectl
+            tag: "1.29.3"
   destination:
     server: https://kubernetes.default.svc
     namespace: kyverno
