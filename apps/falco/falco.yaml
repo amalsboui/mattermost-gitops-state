@@ -24,17 +24,18 @@ spec:
           enabled: false
         containerd:
           enabled: true
+          socket: /run/k3s/containerd/containerd.sock
 
         mounts:
           volumes:
             - name: containerd-socket
               hostPath:
-                path: /run/containerd/containerd.sock
+                path:  /run/k3s/containerd/containerd.sock
                 type: Socket
 
           volumeMounts:
             - name: containerd-socket
-              mountPath: /run/containerd/containerd.sock
+              mountPath:  /run/k3s/containerd/containerd.sock
         customRules:
           mattermost_rules.yaml: |-
             - rule: Shell spawned in mattermost namespace
